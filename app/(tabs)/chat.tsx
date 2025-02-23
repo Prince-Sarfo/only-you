@@ -9,7 +9,15 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-const messages = [
+interface Message {
+  id: string;
+  sender: 'user' | 'bot';
+  text: string;
+  time: string;
+  image: string | null;
+}
+
+const messages: Message[] = [
   {
     id: "1",
     sender: "user",
@@ -43,14 +51,14 @@ const messages = [
 
 const ChatScreen = () => {
   const [messageText, setMessageText] = useState("");
-  const [chatMessages, setChatMessages] = useState(messages);
+  const [chatMessages, setChatMessages] = useState<Message[]>(messages);
 
   const sendMessage = () => {
     if (messageText.trim() === "") return;
     
-    const newMessage = {
+    const newMessage: Message = {
       id: (chatMessages.length + 1).toString(),
-      sender: "user",
+      sender: "user" as 'user' | 'bot',
       text: messageText,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       image: null,
@@ -60,7 +68,7 @@ const ChatScreen = () => {
     setMessageText("");
   };
 
-  const renderMessage = ({ item }) => (
+  const renderMessage = ({ item }: { item: Message }) => (
     <View>
 
     <View

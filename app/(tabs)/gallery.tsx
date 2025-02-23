@@ -13,9 +13,15 @@ import { Feather } from '@expo/vector-icons';
 import { fileShare, fileDelete } from '../services/shareServices';
 import { Image as ExpoImage } from 'expo-image';
 
+// Add type definition
+type MediaItem = {
+  id: string;
+  url: string;
+};
+
 const GalleryScreen = () => {
   const [activeTab, setActiveTab] = useState('photos');
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState<MediaItem | null>(null);
   const [showModal, setShowModal] = useState(false);
 
   // Updated mock data with Unsplash images
@@ -51,7 +57,7 @@ const GalleryScreen = () => {
     );
   };
 
-  const handleMorePress = (item) => {
+  const handleMorePress = (item: MediaItem) => {
     setSelectedItem(item);
     setShowModal(true);
   };
