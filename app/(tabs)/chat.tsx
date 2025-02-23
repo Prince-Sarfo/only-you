@@ -112,7 +112,7 @@ const ChatScreen = () => {
       />
       
       {/* Input Bar */}
-      <View className="flex-row items-center bg-gray-200 mx-4 rounded-full p-2" >
+      <View className="flex-row items-center bg-gray-200 mx-4 rounded-full p-2 mb-4" >
         <TextInput
           className="flex-1  rounded-full px-4 py-2 active:border-none"
           placeholder="Message"
