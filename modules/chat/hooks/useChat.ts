@@ -17,11 +17,11 @@ export function useChat(roomId: RoomId | null, userId: UserId | null) {
     };
   }, [roomId, service]);
 
-  const send = useCallback(async (text: string) => {
-    if (!text.trim() || !roomId || !userId) return;
+  const send = useCallback(async (text: string, options?: { attachmentUrl?: string; viewOnce?: boolean }) => {
+    if ((!text.trim() && !options?.attachmentUrl) || !roomId || !userId) return;
     setIsSending(true);
     try {
-      await service.sendMessage(roomId, userId, text.trim());
+      await service.sendMessage(roomId, userId, text.trim(), options);
     } finally {
       setIsSending(false);
     }

@@ -1,8 +1,10 @@
-import { View, Text, Image, TouchableOpacity, TextInput } from "react-native";
+import { View, Text, Image, TouchableOpacity, TextInput, Alert } from "react-native";
 import { useAuth } from "@/context/auth"; 
 import { useTheme } from "@/context/theme"; 
 import { useState } from "react";
 import { usePairingContext } from "@/modules/pairing/context";
+import * as ImagePicker from 'expo-image-picker';
+import { File, Paths } from 'expo-file-system';
 
 export default function ProfileScreen() {
     const { user, logout, updateUser } = useAuth();
@@ -13,7 +15,27 @@ export default function ProfileScreen() {
     return (
         <View className="flex-1 p-5">
             <View className="items-center mb-8">
-                <TouchableOpacity onPress={() => {}}>
+                <TouchableOpacity onPress={async () => {
+                    try {
+                        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+                        if (status !== 'granted') {
+                          Alert.alert('Permission required', 'We need access to your photos to set a profile picture.');
+                          return;
+                        }
+                        const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, allowsEditing: true, quality: 0.8 });
+                        if (result.canceled || result.assets.length === 0) return;
+                        const asset = result.assets[0];
+                        // persist to app document directory for stability
+                        const ext = asset.fileName?.split('.').pop() || 'jpg';
+                        const destFile = new File(Paths.document, `profile.${ext}`);
+                        const srcFile = new File(asset.uri);
+                        srcFile.copy(destFile);
+                        updateUser({ photoURL: destFile.uri });
+                    } catch (e) {
+                        console.warn(e);
+                        Alert.alert('Error', 'Failed to update profile photo.');
+                    }
+                }}>
                     <Image 
                         source={user?.photoURL ? { uri: user.photoURL } : require('@/assets/images/Profile.png')}
                         className="w-32 h-32 rounded-full mb-2"

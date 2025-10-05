@@ -11,4 +11,5 @@ export interface ChatMessage {
   createdAt: number; // epoch ms
   status: MessageStatus;
   attachmentUrl?: string;
+  viewOnce?: boolean; // if true, delete after first view
 }

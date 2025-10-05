@@ -8,7 +8,12 @@ export interface ChatService {
     roomId: RoomId,
     onChange: (messages: ChatMessage[]) => void
   ): Unsubscribe;
-  sendMessage(roomId: RoomId, senderId: UserId, text: string): Promise<ChatMessage>;
+  sendMessage(
+    roomId: RoomId,
+    senderId: UserId,
+    text: string,
+    options?: { attachmentUrl?: string; viewOnce?: boolean }
+  ): Promise<ChatMessage>;
   markAsRead(roomId: RoomId, messageIds: string[]): Promise<void>;
   clearRoom(roomId: RoomId): Promise<void>;
 }
