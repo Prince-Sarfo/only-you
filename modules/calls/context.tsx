@@ -14,6 +14,7 @@ interface CallsContextValue {
   muteLocalAudio: (mute: boolean) => void;
   enableLocalVideo: (enabled: boolean) => void;
   switchCamera: () => void;
+  muteRemote: (uid: number, mute: boolean) => void;
 }
 
 const CallsContext = createContext<CallsContextValue | undefined>(undefined);
@@ -54,6 +55,7 @@ export function CallsProvider({ children }: { children: React.ReactNode }) {
     muteLocalAudio: (m: boolean) => service.muteLocalAudio(m),
     enableLocalVideo: (e: boolean) => service.enableLocalVideo(e),
     switchCamera: () => service.switchCamera(),
+    muteRemote: (uid: number, mute: boolean) => service.muteRemote(uid, mute),
   }), [session, startVoice, startVideo, end, service]);
 
   return <CallsContext.Provider value={value}>{children}</CallsContext.Provider>;

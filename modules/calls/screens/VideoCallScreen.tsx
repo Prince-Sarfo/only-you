@@ -6,7 +6,7 @@ import { RenderModeType } from 'react-native-agora';
 import { usePairingContext } from '@/modules/pairing/context';
 
 export default function VideoCallScreen() {
-  const { startVideo, end, switchCamera, enableLocalVideo, muteLocalAudio, session } = useCalls();
+  const { startVideo, end, switchCamera, enableLocalVideo, muteLocalAudio, muteRemote, session } = useCalls();
   const [muted, setMuted] = React.useState(false);
   const [videoOn, setVideoOn] = React.useState(true);
   React.useEffect(() => { startVideo(); }, [startVideo]);
@@ -25,8 +25,13 @@ export default function VideoCallScreen() {
             </View>
           ) : (
             remoteUids.map((uid) => (
-              <View key={uid} className={`w-64 h-40 rounded mb-4 overflow-hidden ${session?.activeSpeakerUid === uid ? 'border-2 border-green-400' : ''}`}>
+              <View key={uid} className={`w-40 h-28 m-1 rounded overflow-hidden ${session?.activeSpeakerUid === uid ? 'border-2 border-green-400' : ''}`}>
                 <RtcSurfaceView canvas={{ uid, renderMode: RenderModeType.RenderModeFit } as VideoCanvas} />
+                <View className="absolute top-1 right-1">
+                  <TouchableOpacity className="px-2 py-1 bg-black/50 rounded" onPress={() => muteRemote(uid, true)}>
+                    <Text className="text-white text-xs">Mute</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             ))
           )}

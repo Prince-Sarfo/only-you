@@ -44,4 +44,5 @@ export class LocalCallService implements CallService {
   muteLocalAudio(_mute: boolean): void {}
   enableLocalVideo(_enabled: boolean): void {}
   switchCamera(): void {}
+  muteRemote(_uid: number, _mute: boolean): void {}
 }

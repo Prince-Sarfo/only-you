@@ -11,4 +11,5 @@ export interface CallService {
   muteLocalAudio(mute: boolean): void;
   enableLocalVideo(enabled: boolean): void;
   switchCamera(): void;
+  muteRemote(uid: number, mute: boolean): void;
 }

@@ -12,6 +12,7 @@ export class AgoraCallService implements CallService {
   private audioMuted = false;
   private videoEnabled = true;
   private activeSpeakerUid: number | null = null;
+  private mutedRemotes = new Set<number>();
 
   private async ensureEngine(type: CallType) {
     if (this.engine) return;
@@ -142,5 +143,11 @@ export class AgoraCallService implements CallService {
   switchCamera() {
     if (!this.engine) return;
     this.engine.switchCamera();
+  }
+  muteRemote(uid: number, mute: boolean) {
+    if (!this.engine) return;
+    this.engine.muteRemoteAudioStream(uid, mute);
+    if (mute) this.mutedRemotes.add(uid); else this.mutedRemotes.delete(uid);
+    if (this.session) this.emit();
   }
 }
