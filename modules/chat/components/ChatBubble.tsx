@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 
-export function ChatBubble({ text, isMine, time }: { text: string; isMine: boolean; time?: string }) {
+export function ChatBubble({ text, isMine, time, viewOnce }: { text: string; isMine: boolean; time?: string; viewOnce?: boolean }) {
   return (
     <View>
       <View
@@ -9,7 +9,9 @@ export function ChatBubble({ text, isMine, time }: { text: string; isMine: boole
           isMine ? 'self-end bg-green-500' : 'self-start bg-gray-800'
         }`}
       >
-        <Text className={`px-4 py-2 ${isMine ? 'text-white' : 'text-white'}`}>{text}</Text>
+        <Text className={`px-4 py-2 ${isMine ? 'text-white' : 'text-white'}`}>
+          {viewOnce ? '👁️ View once • ' : ''}{text}
+        </Text>
       </View>
       {time ? (
         <Text className={`text-xs px-4 pb-1 ${isMine ? 'text-gray-400 self-end' : 'text-gray-400'}`}>{time}</Text>

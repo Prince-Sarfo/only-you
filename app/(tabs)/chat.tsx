@@ -60,9 +60,10 @@ export default function ChatScreen() {
             }}
           >
             <ChatBubble
-              text={item.viewOnce ? 'View once photo' : item.text}
+              text={item.viewOnce ? 'Photo' : item.text}
               isMine={item.senderId === userId}
               time={new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              viewOnce={!!item.viewOnce}
             />
           </TouchableOpacity>
         )}

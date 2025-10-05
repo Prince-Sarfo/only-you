@@ -68,12 +68,17 @@ export default function ProfileScreen() {
                     </TouchableOpacity>
                   </View>
                 ) : null}
-                <TouchableOpacity 
-                    className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg mb-3"
-                    onPress={toggleTheme}
-                >
-                    <Text className="dark:text-white">Toggle Theme</Text>
-                </TouchableOpacity>
+                <View className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg mb-3">
+                    <Text className="dark:text-white mb-2">Theme</Text>
+                    <View className="flex-row space-x-3">
+                        <TouchableOpacity onPress={() => { if (isDark) toggleTheme(); }} className="px-4 py-2 bg-white dark:bg-gray-700 rounded">
+                            <Text className="dark:text-white">Light</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => { if (!isDark) toggleTheme(); }} className="px-4 py-2 bg-white dark:bg-gray-700 rounded">
+                            <Text className="dark:text-white">Dark</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
 
                 <TouchableOpacity 
                     className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg mb-3"
