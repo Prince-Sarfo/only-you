@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 interface User {
+  id: string; // stable identity for senderId
   displayName?: string;
   photoURL?: string;
   phoneNumber?: string;
@@ -28,8 +29,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }, 1000);
   }, []);
 
-  const login = (userData: User) => {
-    setUser(userData);
+  const login = (userData: Omit<User, 'id'> & { id?: string }) => {
+    // ensure id exists even if caller omits it
+    const ensured: User = { id: userData.id ?? 'local-user', ...userData } as User;
+    setUser(ensured);
   };
 
   const logout = () => {
