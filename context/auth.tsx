@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { storageGetObject, storageSetObject, storageRemove } from '@/modules/core/storage/asyncStorage';
 
 interface User {
   id: string; // stable identity for senderId
@@ -22,25 +23,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Here you would typically check for existing session/user
-    // For now, we'll just simulate a loading state
-    setTimeout(() => {
+    (async () => {
+      const persisted = await storageGetObject<User>('auth:user');
+      if (persisted) setUser(persisted);
       setIsLoading(false);
-    }, 1000);
+    })();
   }, []);
 
   const login = (userData: Omit<User, 'id'> & { id?: string }) => {
     // ensure id exists even if caller omits it
     const ensured: User = { id: userData.id ?? 'local-user', ...userData } as User;
     setUser(ensured);
+    storageSetObject('auth:user', ensured);
   };
 
   const logout = () => {
     setUser(null);
+    storageRemove('auth:user');
   };
 
   const updateUser = (updates: Partial<User>) => {
-    setUser(prev => prev ? { ...prev, ...updates } : null);
+    setUser(prev => {
+      const next = prev ? { ...prev, ...updates } : null;
+      if (next) storageSetObject('auth:user', next);
+      return next;
+    });
   };
 
   return (
