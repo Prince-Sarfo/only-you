@@ -40,4 +40,8 @@ export class LocalCallService implements CallService {
   private emit() {
     this.listeners.forEach((l) => l(this.session));
   }
+
+  muteLocalAudio(_mute: boolean): void {}
+  enableLocalVideo(_enabled: boolean): void {}
+  switchCamera(): void {}
 }

@@ -7,4 +7,8 @@ export interface CallService {
   start(type: CallType, channelId: string): Promise<CallSession>;
   end(): Promise<void>;
   subscribe(cb: (session: CallSession | null) => void): Unsubscribe;
+  // Controls
+  muteLocalAudio(mute: boolean): void;
+  enableLocalVideo(enabled: boolean): void;
+  switchCamera(): void;
 }

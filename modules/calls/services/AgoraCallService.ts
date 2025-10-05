@@ -9,6 +9,8 @@ export class AgoraCallService implements CallService {
   private session: CallSession | null = null;
   private listeners = new Set<(s: CallSession | null) => void>();
   private engine: ReturnType<typeof createAgoraRtcEngine> | null = null;
+  private audioMuted = false;
+  private videoEnabled = true;
 
   private async ensureEngine(type: CallType) {
     if (this.engine) return;
@@ -93,5 +95,21 @@ export class AgoraCallService implements CallService {
 
   private emit() {
     this.listeners.forEach((l) => l(this.session));
+  }
+
+  // Controls
+  muteLocalAudio(mute: boolean) {
+    if (!this.engine) return;
+    this.audioMuted = mute;
+    this.engine.muteLocalAudioStream(mute);
+  }
+  enableLocalVideo(enabled: boolean) {
+    if (!this.engine) return;
+    this.videoEnabled = enabled;
+    this.engine.enableLocalVideo(enabled);
+  }
+  switchCamera() {
+    if (!this.engine) return;
+    this.engine.switchCamera();
   }
 }

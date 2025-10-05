@@ -9,6 +9,9 @@ interface CallsContextValue {
   startVoice: () => Promise<void>;
   startVideo: () => Promise<void>;
   end: () => Promise<void>;
+  muteLocalAudio: (mute: boolean) => void;
+  enableLocalVideo: (enabled: boolean) => void;
+  switchCamera: () => void;
 }
 
 const CallsContext = createContext<CallsContextValue | undefined>(undefined);
@@ -35,7 +38,15 @@ export function CallsProvider({ children }: { children: React.ReactNode }) {
   const startVideo = useCallback(async () => start('video'), [start]);
   const end = useCallback(async () => { await service.end(); }, [service]);
 
-  const value = useMemo(() => ({ session, startVoice, startVideo, end }), [session, startVoice, startVideo, end]);
+  const value = useMemo(() => ({
+    session,
+    startVoice,
+    startVideo,
+    end,
+    muteLocalAudio: (m: boolean) => service.muteLocalAudio(m),
+    enableLocalVideo: (e: boolean) => service.enableLocalVideo(e),
+    switchCamera: () => service.switchCamera(),
+  }), [session, startVoice, startVideo, end, service]);
 
   return <CallsContext.Provider value={value}>{children}</CallsContext.Provider>;
 }
