@@ -7,8 +7,8 @@ export default function OnboardingThreeScreen() {
             <InitialScreen 
                 title="Focused Conversation" 
                 description="Dive deep and stay engaged with the person who matters" 
-                buttonText="NEXT" 
-                path="/(tabs)/chat"
+                buttonText="START" 
+                path="/(onboarding)/setup-two-user"
             />
         </SafeAreaView>
     )
