@@ -64,8 +64,20 @@ export class AgoraCallService implements CallService {
       remoteUids: [],
     };
 
-    // In production, request token from your server. For testing with app certificate disabled you can pass null.
-    this.engine!.joinChannel('', channelId, 0, {
+    // Token handling
+    let token: string | null = process.env.EXPO_PUBLIC_AGORA_TOKEN ?? null;
+    const endpoint = process.env.EXPO_PUBLIC_AGORA_TOKEN_ENDPOINT;
+    if (!token && endpoint) {
+      try {
+        const res = await fetch(`${endpoint}?channel=${encodeURIComponent(channelId)}`);
+        const data = await res.json();
+        token = data.token || data.agoraToken || null;
+      } catch (e) {
+        console.warn('[Agora] Failed to fetch token', e);
+      }
+    }
+
+    this.engine!.joinChannel(token ?? '', channelId, 0, {
       clientRoleType: ClientRoleType.ClientRoleBroadcaster,
     });
 

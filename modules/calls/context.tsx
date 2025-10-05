@@ -3,6 +3,8 @@ import { LocalCallService } from '@/modules/calls/services/LocalCallService';
 import { AgoraCallService } from '@/modules/calls/services/AgoraCallService';
 import { CallSession, CallType } from '@/modules/calls/types';
 import type { CallService } from '@/modules/calls/services/CallService';
+import { usePairingContext } from '@/modules/pairing/context';
+import { checkAndRequestPermissions } from '@/setup';
 
 interface CallsContextValue {
   session: CallSession | null;
@@ -23,6 +25,7 @@ export function CallsProvider({ children }: { children: React.ReactNode }) {
   });
   const [session, setSession] = useState<CallSession | null>(null);
   const unsubRef = useRef<null | (() => void)>(null);
+  const { roomId, code } = usePairingContext();
 
   useEffect(() => {
     unsubRef.current = service.subscribe(setSession);
@@ -30,9 +33,14 @@ export function CallsProvider({ children }: { children: React.ReactNode }) {
   }, [service]);
 
   const start = useCallback(async (type: CallType) => {
-    const channelId = 'onlyyou';
+    const channelId = code || roomId || 'onlyyou';
+    if (type === 'video') {
+      await checkAndRequestPermissions({ camera: true, microphone: true });
+    } else {
+      await checkAndRequestPermissions({ microphone: true });
+    }
     await service.start(type, channelId);
-  }, [service]);
+  }, [service, roomId, code]);
 
   const startVoice = useCallback(async () => start('voice'), [start]);
   const startVideo = useCallback(async () => start('video'), [start]);
