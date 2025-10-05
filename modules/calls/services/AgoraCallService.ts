@@ -11,6 +11,7 @@ export class AgoraCallService implements CallService {
   private engine: ReturnType<typeof createAgoraRtcEngine> | null = null;
   private audioMuted = false;
   private videoEnabled = true;
+  private activeSpeakerUid: number | null = null;
 
   private async ensureEngine(type: CallType) {
     if (this.engine) return;
@@ -46,9 +47,20 @@ export class AgoraCallService implements CallService {
         this.session = null;
         this.emit();
       },
+      onAudioVolumeIndication: (connection, speakers) => {
+        const top = speakers?.[0];
+        if (top && top.uid) {
+          this.activeSpeakerUid = Number(top.uid);
+          if (this.session) {
+            this.session = { ...this.session, activeSpeakerUid: this.activeSpeakerUid };
+          }
+          this.emit();
+        }
+      },
     };
 
     this.engine.registerEventHandler(handler);
+    this.engine.enableAudioVolumeIndication(200, 3, true);
   }
 
   async getCurrent(): Promise<CallSession | null> {
@@ -71,15 +83,20 @@ export class AgoraCallService implements CallService {
     const endpoint = process.env.EXPO_PUBLIC_AGORA_TOKEN_ENDPOINT;
     if (!token && endpoint) {
       try {
-        const res = await fetch(`${endpoint}?channel=${encodeURIComponent(channelId)}`);
+        const res = await fetch(`${endpoint}?channel=${encodeURIComponent(channelId)}&role=publisher`);
         const data = await res.json();
         token = data.token || data.agoraToken || null;
+        const uidFromServer = Number(data.uid || 0);
+        if (uidFromServer && this.session) {
+          this.session = { ...this.session, localUid: uidFromServer };
+        }
       } catch (e) {
         console.warn('[Agora] Failed to fetch token', e);
       }
     }
 
-    this.engine!.joinChannel(token ?? '', channelId, 0, {
+    const uidToUse = this.session?.localUid || 0;
+    this.engine!.joinChannel(token ?? '', channelId, uidToUse, {
       clientRoleType: ClientRoleType.ClientRoleBroadcaster,
     });
 

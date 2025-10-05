@@ -8,4 +8,5 @@ export interface CallSession {
   isOngoing: boolean;
   localUid?: number;
   remoteUids: number[];
+  activeSpeakerUid?: number | null;
 }

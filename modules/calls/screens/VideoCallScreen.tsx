@@ -25,7 +25,7 @@ export default function VideoCallScreen() {
             </View>
           ) : (
             remoteUids.map((uid) => (
-              <View key={uid} className="w-64 h-40 rounded mb-4 overflow-hidden">
+              <View key={uid} className={`w-64 h-40 rounded mb-4 overflow-hidden ${session?.activeSpeakerUid === uid ? 'border-2 border-green-400' : ''}`}>
                 <RtcSurfaceView canvas={{ uid, renderMode: RenderModeType.RenderModeFit } as VideoCanvas} />
               </View>
             ))
