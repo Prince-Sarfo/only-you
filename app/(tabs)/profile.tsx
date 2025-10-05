@@ -2,13 +2,11 @@ import { View, Text, Image, TouchableOpacity, TextInput } from "react-native";
 import { useAuth } from "@/context/auth"; 
 import { useTheme } from "@/context/theme"; 
 import { useState } from "react";
-import { usePairingContext } from "@/modules/pairing/context";
 
 export default function ProfileScreen() {
     const { user, logout, updateUser } = useAuth();
     const { toggleTheme, isDark } = useTheme();
     const [isEditing, setIsEditing] = useState(false);
-    const { isPaired, code, leaveRoom } = usePairingContext();
 
     return (
         <View className="flex-1 p-5">
@@ -38,14 +36,6 @@ export default function ProfileScreen() {
             </View>
 
             <View className="mt-5">
-                {isPaired ? (
-                  <View className="p-4 bg-green-50 rounded-lg mb-3">
-                    <Text className="text-green-700">Paired code: {code}</Text>
-                    <TouchableOpacity onPress={leaveRoom} className="mt-2">
-                      <Text className="text-red-500">Leave room</Text>
-                    </TouchableOpacity>
-                  </View>
-                ) : null}
                 <TouchableOpacity 
                     className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg mb-3"
                     onPress={toggleTheme}
