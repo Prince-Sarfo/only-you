@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import { LocalCallService } from '@/modules/calls/services/LocalCallService';
+import { AgoraCallService } from '@/modules/calls/services/AgoraCallService';
 import { CallSession, CallType } from '@/modules/calls/types';
 import type { CallService } from '@/modules/calls/services/CallService';
 
@@ -13,7 +14,10 @@ interface CallsContextValue {
 const CallsContext = createContext<CallsContextValue | undefined>(undefined);
 
 export function CallsProvider({ children }: { children: React.ReactNode }) {
-  const [service] = useState<CallService>(() => new LocalCallService());
+  const [service] = useState<CallService>(() => {
+    const hasAppId = !!(process.env.EXPO_PUBLIC_AGORA_APP_ID);
+    return hasAppId ? new AgoraCallService() : new LocalCallService();
+  });
   const [session, setSession] = useState<CallSession | null>(null);
   const unsubRef = useRef<null | (() => void)>(null);
 
@@ -23,7 +27,8 @@ export function CallsProvider({ children }: { children: React.ReactNode }) {
   }, [service]);
 
   const start = useCallback(async (type: CallType) => {
-    await service.start(type);
+    const channelId = 'onlyyou';
+    await service.start(type, channelId);
   }, [service]);
 
   const startVoice = useCallback(async () => start('voice'), [start]);

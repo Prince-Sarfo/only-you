@@ -10,12 +10,14 @@ export class LocalCallService implements CallService {
     return this.session;
   }
 
-  async start(type: CallType): Promise<CallSession> {
+  async start(type: CallType, channelId: string): Promise<CallSession> {
     this.session = {
       id: generateId('call'),
       type,
+      channelId,
       startedAt: Date.now(),
       isOngoing: true,
+      remoteUids: [],
     };
     this.emit();
     return this.session;
