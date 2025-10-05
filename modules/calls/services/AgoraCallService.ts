@@ -22,6 +22,8 @@ export class AgoraCallService implements CallService {
     this.engine.enableAudio();
     if (type === 'video') {
       this.engine.enableVideo();
+      // Start preview so local RtcSurfaceView renders before join
+      this.engine.startPreview();
     }
 
     const handler: IRtcEngineEventHandler = {

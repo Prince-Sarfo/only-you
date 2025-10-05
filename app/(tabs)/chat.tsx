@@ -17,7 +17,7 @@ export default function ChatScreen() {
   const { roomId, isPaired } = usePairingContext();
   const { user } = useAuth();
   const userId = useMemo(() => user?.id || user?.phoneNumber || user?.displayName || 'me', [user]);
-  const { messages, isSending, send } = useChat(roomId, userId);
+  const { messages, isSending, send, markRead } = useChat(roomId, userId);
   const [text, setText] = useState('');
   const [showSettings, setShowSettings] = useState(false);
   const [viewOnceMessageId, setViewOnceMessageId] = useState<string | null>(null);
@@ -73,7 +73,8 @@ export default function ChatScreen() {
         <ViewOnceViewer
           message={messages.find((m) => m.id === viewOnceMessageId)!}
           onClose={() => {
-            // Close viewer; burn will occur on markRead via hook update
+            // Burn on read
+            markRead();
             setViewOnceMessageId(null);
           }}
         />
